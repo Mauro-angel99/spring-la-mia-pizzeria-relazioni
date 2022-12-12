@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+    <h1>Drinks</h1>
+	<a href="/drink/create">CREATE NEW DRINKS</a>
+	<ul>
+		<li
+			th:each="drink : ${drinks}"
+			th:object="${drink}"
+		>
+			<a
+				th:href="@{/drink/{id} (id=*{id})}"
+			>
+				 [[*{name}]] - [[*{price}]]
+			</a><br>
+			<a
+				th:href="@{/drink/update/{id} (id=*{id})}"
+			>
+				UPDATE
+			</a> - 
+			<a
+				th:href="@{/drink/delete/{id} (id=*{id})}"
+			>
+				DELETE
+			</a>
+		</li>
+	</ul>
+
+</body>
+</html>

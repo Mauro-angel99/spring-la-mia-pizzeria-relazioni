@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+     <h1>Pizzas</h1>
+	<a href="/pizza/create">CREATE NEW PIZZA</a>
+	<ul>
+		<li
+			th:each="pizza : ${pizzas}"
+			th:object="${pizza}"
+		>
+			<a
+				th:href="@{/pizza/{id} (id=*{id})}"
+			>
+				 [[*{name}]] - [[*{price}]]
+			</a><br>
+			<a
+				th:href="@{/pizza/update/{id} (id=*{id})}"
+			>
+				UPDATE
+			</a> - 
+			<a
+				th:href="@{/pizza/delete/{id} (id=*{id})}"
+			>
+				DELETE
+			</a>
+		</li>
+	</ul>
+
+</body>
+</html>

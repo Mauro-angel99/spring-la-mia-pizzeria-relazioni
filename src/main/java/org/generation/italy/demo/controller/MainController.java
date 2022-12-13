@@ -65,6 +65,9 @@ public class MainController {
 		Pizza pizza = new Pizza();
 		model.addAttribute("pizza", pizza);
 		
+		List<Promozione> promozioni = promozioneService.findAll();
+		model.addAttribute("promozioni", promozioni);
+		
 		return "pizza-create";
 	}
 	@PostMapping("/pizza/create")
@@ -103,6 +106,10 @@ public class MainController {
 		
 		return "redirect:/";
 	}
+	
+	
+	//--------------------------------------------------------------------------------------
+	
 	
 	@GetMapping("/drink")
 	public String getDrinks(Model model) {
@@ -175,6 +182,54 @@ public class MainController {
 		return "redirect:/drink";
 	}
 	
-	
+	//--------------------------------------------------------------------------------------
 
+	
+	 
+	
+    @GetMapping("/promozione")
+	public String getPromozioni(Model model) {
+			
+		List<Promozione> promozioni = promozioneService.findAll();
+		model.addAttribute("promozioni", promozioni);
+			
+		return "promozioni";
+	}
+    
+	@GetMapping("/promozione/create")
+	public String createPromozione(Model model) {
+			
+		Promozione promozione = new Promozione();
+		model.addAttribute("promozione", promozione);
+			
+		List<Pizza> pizzas = pizzaService.findAll();
+		model.addAttribute("pizzas", pizzas);
+			
+		return "promozione-create";
+	}
+	
+	@PostMapping("/promozione/store")
+	public String storePromozioni(
+				@Valid Promozione promozione
+			) {
+			
+		System.err.println(promozione);
+		if (promozione.getPizzas() != null)
+			for (Pizza pizza : promozione.getPizzas()) {
+					
+				System.err.println("\t" + pizza);
+			}
+	   	else 
+			System.err.println("- no pizza -");
+			
+		List<Pizza> promozionePizza = promozione.getPizzas();
+		for(Pizza pizza : promozionePizza) {
+				
+			pizza.setPromozione(promozione);
+		}
+			
+	    promozioneService.save(promozione);
+		
+		return "redirect:/promozione";
+	}
 }

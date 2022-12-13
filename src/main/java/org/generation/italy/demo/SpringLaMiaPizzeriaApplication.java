@@ -38,7 +38,7 @@ public class SpringLaMiaPizzeriaApplication implements CommandLineRunner {
 		
 		Promozione prom1 = new Promozione(LocalDate.of(2022, 1, 8), LocalDate.of(2022, 3, 8), "promozione1");
 		Promozione prom2 = new Promozione(LocalDate.of(2022, 4, 10), LocalDate.of(2022, 6, 10), "promozione2");
-		Promozione prom3 = new Promozione(LocalDate.of(2022, 7, 10), LocalDate.of(2022, 9, 10), "promozione1");
+		Promozione prom3 = new Promozione(LocalDate.of(2022, 7, 10), LocalDate.of(2022, 9, 10), "promozione3");
 		
 		promozioneService.save(prom1);
 		promozioneService.save(prom2);

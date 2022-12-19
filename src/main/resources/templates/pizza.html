@@ -12,6 +12,27 @@
 		 [[*{description}]]
 	</p>
 	<span>[[*{price}]]</span>
-
+	<ul
+	         th:value="*{id}"
+	    	 th:field="${pizza.promozione}"
+	>
+	    <li     
+	     th:each="promozione : ${pizza.promozione}"
+		 th:object="${promozione}"
+	    		>
+	    			[[*{titolo}]]
+        </li>
+	</ul>
+    <ul
+	          th:value="@{/pizza/{id} (id=*{id})}"
+	     	 th:field="${pizza.ingredienti}"
+	>
+         <li 
+         th:each="ingrediente : ${pizza.ingredienti}"
+		 th:object="${ingrediente}"
+	     		>
+	     			[[*{name}]]
+         </li>
+    </ul>
 </body>
 </html>

@@ -1,12 +1,15 @@
 package org.generation.italy.demo;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import org.generation.italy.demo.pojo.Drink;
+import org.generation.italy.demo.pojo.Ingrediente;
 import org.generation.italy.demo.pojo.Pizza;
 import org.generation.italy.demo.pojo.Promozione;
 import org.generation.italy.demo.serv.DrinkService;
+import org.generation.italy.demo.serv.IngredienteService;
 import org.generation.italy.demo.serv.PizzaService;
 import org.generation.italy.demo.serv.PromozioneService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class SpringLaMiaPizzeriaApplication implements CommandLineRunner {
+	
+	@Autowired
+	private IngredienteService ingredienteService;
 	
 	@Autowired
 	private PromozioneService promozioneService;
@@ -44,11 +50,33 @@ public class SpringLaMiaPizzeriaApplication implements CommandLineRunner {
 		promozioneService.save(prom2);
 		promozioneService.save(prom3);
 		
-		Pizza p1 = new Pizza("margherita", "mozzarella e pomodoro", 5, prom1);
-		Pizza p2 = new Pizza("rossini", "mozzarella, pomodoro, uovo e majonese", 8, prom3);
-		Pizza p3 = new Pizza("salsiccia", "mozzarella, pomodoro e salsiccia", 6, prom2);
-		Pizza p4 = new Pizza("ciglista", "base bianca", 5, prom3);
-
+		Ingrediente i1 = new Ingrediente("pomodoro");
+		Ingrediente i2 = new Ingrediente("salsiccia");
+		Ingrediente i3 = new Ingrediente("uova");
+		Ingrediente i4 = new Ingrediente("mozzarella");
+		
+		ingredienteService.save(i1);
+		ingredienteService.save(i2);
+		ingredienteService.save(i3);
+		ingredienteService.save(i4);
+		
+		List<Ingrediente> ingP1 = Arrays.asList(new Ingrediente[] {
+				i1, i2
+		});		
+		Pizza p1 = new Pizza("Margherita", "descrizione margherita", 5, prom1, ingP1);
+		
+		List<Ingrediente> ingP2 = Arrays.asList(new Ingrediente[] {
+				i2, i4
+		});
+		Pizza p2 = new Pizza("Salsiccia", "descrizione Salsiccia", 6, prom2, ingP2);
+		
+		List<Ingrediente> ingP3 = Arrays.asList(new Ingrediente[] {
+				i3, i4
+		});
+		Pizza p3 = new Pizza("Diavola", "descrizione diavola", 7, ingP3);
+		
+		Pizza p4 = new Pizza("Rossini", "descrizione rossini", 7, prom3);
+		
 		pizzaService.save(p1);
 		pizzaService.save(p2);
 		pizzaService.save(p3);
@@ -62,20 +90,5 @@ public class SpringLaMiaPizzeriaApplication implements CommandLineRunner {
 		drinkService.save(d2);
 		drinkService.save(d3);
 		
-		
-		
-		
-		// LETTURA
-		
-		List<Pizza> pizzas = pizzaService.findAll();
-		System.out.println(pizzas);
-		
-		List<Drink> drinks = drinkService.findAll();
-		System.out.println(drinks);
-		
-		List<Promozione> promozioni = promozioneService.findAll();
-		System.out.println(promozioni);
-		
-
 	}
 }

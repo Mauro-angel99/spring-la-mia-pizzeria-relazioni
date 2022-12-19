@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.generation.italy.demo.pojo.Drink;
+import org.generation.italy.demo.pojo.Ingrediente;
 import org.generation.italy.demo.pojo.Pizza;
 import org.generation.italy.demo.pojo.Promozione;
 import org.generation.italy.demo.serv.DrinkService;
+import org.generation.italy.demo.serv.IngredienteService;
 import org.generation.italy.demo.serv.PizzaService;
 import org.generation.italy.demo.serv.PromozioneService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class MainController {
 	@Autowired
 	private PromozioneService promozioneService;
 	
+	@Autowired
+	private IngredienteService ingredienteService;
+	
 	@GetMapping
 	public String getPizzas(Model model) {
 		
@@ -46,6 +51,12 @@ public class MainController {
 	public String getPizza(@PathVariable("id") int id, Model model) {
 		
 		Optional<Pizza> optPizza = pizzaService.findPizzaById(id);
+		
+		List<Promozione> promozioni = promozioneService.findAll();
+		model.addAttribute("promozioni", promozioni);
+		
+		List<Ingrediente> ingredienti = ingredienteService.findAll();
+		model.addAttribute("ingredienti", ingredienti);
 		
 		if (optPizza.isEmpty()) {
 			
@@ -68,6 +79,9 @@ public class MainController {
 		List<Promozione> promozioni = promozioneService.findAll();
 		model.addAttribute("promozioni", promozioni);
 		
+		List<Ingrediente> ingredienti = ingredienteService.findAll();
+		model.addAttribute("ingredienti", ingredienti);
+		
 		return "pizza-create";
 	}
 	@PostMapping("/pizza/create")
@@ -83,8 +97,13 @@ public class MainController {
 		
 		Optional<Pizza> optPizza = pizzaService.findPizzaById(id);
 		Pizza pizza = optPizza.get();
-		
 		model.addAttribute("pizza", pizza);
+		
+		List<Promozione> promozioni = promozioneService.findAll();
+		model.addAttribute("promozioni", promozioni);
+		
+		List<Ingrediente> ingredienti = ingredienteService.findAll();
+		model.addAttribute("ingredienti", ingredienti);
 		
 		return "pizza-update";
 	}
@@ -231,5 +250,87 @@ public class MainController {
 	    promozioneService.save(promozione);
 		
 		return "redirect:/promozione";
+	}
+	
+	//--------------------------------------------------------------------------------------
+	
+	@GetMapping("/ingrediente")
+	public String getIngredienti(Model model) {
+		
+		List<Ingrediente> ingredienti = ingredienteService.findAll();
+		model.addAttribute("ingredienti", ingredienti);
+		
+		return "ingredienti";
+	}
+	@GetMapping("/ingrediente/create")
+	public String createIngrediente(Model model) {
+		
+		Ingrediente ingrediente = new Ingrediente();
+		model.addAttribute("ingrediente", ingrediente);
+		
+		List<Pizza> pizze = pizzaService.findAll();
+		model.addAttribute("pizze", pizze);
+		
+		return "ingrediente-create";
+	}
+	@PostMapping("/ingrediente/create")
+	public String storeIngrediente(@Valid Ingrediente ingrediente) {
+		
+		for (Pizza p : ingrediente.getPizze()) {
+			
+			p.getIngredienti().add(ingrediente);
+		}
+		
+		ingredienteService.save(ingrediente);
+		
+		return "redirect:/ingrediente";
+	}
+	
+	@GetMapping("/ingrediente/update/{id}")
+	public String updateIngrediente(
+			@PathVariable("id") int id,
+			Model model
+		) {
+		
+		Ingrediente ingrediente = ingredienteService.findIngredienteById(id);
+		model.addAttribute("ingrediente", ingrediente);
+		
+		List<Pizza> pizze = pizzaService.findAll();
+		model.addAttribute("pizze", pizze);
+		
+		return "ingrediente-update";
+	}
+	@PostMapping("/ingrediente/update/{id}")
+	public String editIngrediente(
+			@PathVariable("id") int id,
+			@Valid Ingrediente ingrediente
+		) {
+		
+		Ingrediente oldIng = ingredienteService.findIngredienteById(id);
+		
+		for (Pizza p : oldIng.getPizze()) {
+			
+			p.getIngredienti().remove(oldIng);
+		}
+		
+		for (Pizza p : ingrediente.getPizze()) {
+			
+			p.addIngrediente(ingrediente);
+		}
+		
+		ingredienteService.save(ingrediente);
+		
+		return "redirect:/ingrediente";
+	}
+	
+	@GetMapping("/ingrediente/delete/{id}")
+	public String deleteIngrediente(@PathVariable("id") int id) {
+		
+		Optional<Ingrediente> optIngrediente = Optional.ofNullable(ingredienteService.findIngredienteById(id));
+		Ingrediente ingrediente = optIngrediente.get();
+		
+		ingredienteService.delete(ingrediente);
+		
+		return "redirect:/ingrediente";
 	}
 }

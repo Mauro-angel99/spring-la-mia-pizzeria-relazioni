@@ -1,11 +1,13 @@
 package org.generation.italy.demo.pojo;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
@@ -33,19 +35,40 @@ public class Pizza {
 	private int price;
 	
 	@ManyToOne
-	@JoinColumn(nullable = false)
 	private Promozione promozione;
 	
+	@ManyToMany
+	private List<Ingrediente> ingredienti;
+	
 	public Pizza() {}
-	public Pizza(String name, String description, int price, Promozione promozione) {
+	public Pizza(String name, String description, int price) {
 		
 		setName(name);
 		setDescription(description);
 		setPrice(price);
-		setPromozione(promozione);
 		
 	}
 	
+    public Pizza(String name, String description, int price, Promozione promozione) {
+		
+		this(name, description, price);
+		
+		setPromozione(promozione);
+	}
+    
+	public Pizza(String name, String description, int price, List<Ingrediente> ingredienti) {
+		
+		this(name, description, price);
+		
+		setIngredienti(ingredienti);
+	}
+	
+	public Pizza(String name, String description, int price, Promozione promozione, List<Ingrediente> ingredienti) {
+		
+		this(name, description, price, promozione);
+		
+		setIngredienti(ingredienti);
+	}
 	
 	public int getId() {
 		return id;
@@ -82,8 +105,30 @@ public class Pizza {
 	public Promozione getPromozione() {
 		return promozione;
 	}
+	
 	public void setPromozione(Promozione promozione) {
 		this.promozione = promozione;
+	}
+	
+	public List<Ingrediente> getIngredienti() {
+		return ingredienti;
+	}
+	
+	public void setIngredienti(List<Ingrediente> ingredienti) {
+		this.ingredienti = ingredienti;
+	}
+	
+	public void addIngrediente(Ingrediente ingrediente) {
+		
+		boolean finded = false;
+		for (Ingrediente i : getIngredienti()) {
+			
+			if (i.getId() == ingrediente.getId())
+				finded = true;
+		}
+		
+		if (!finded)
+			getIngredienti().add(ingrediente);
 	}
 	
 	@Override
